@@ -9,17 +9,17 @@ class Student:
 
 
 class Assignment:
-    def __init__(self, name, id, points):
-        self.points = int(points)
+    def __init__(self, name, id, total):
+        self.total = int(total)
         self.name = name
         self.id = int(id)
 
 
 class Submission:
-    def __init__(self, assignment, student, score):
+    def __init__(self, assignment, student, grade):
         self.student = int(student)
         self.assignment = int(assignment)
-        self.score = int(score)
+        self.grade = int(grade)
 
 
 def get_students():
@@ -48,8 +48,8 @@ def get_submissions():
     submissions = []
     for filename in os.listdir("data/submissions"):
         with open(f"data/submissions/{filename}", "r") as file:
-            student_id, assignment_id, score = file.read().split("|")
-            submissions.append(Submission(assignment_id, student_id, score))
+            student_id, assignment_id, grade = file.read().split("|")
+            submissions.append(Submission(assignment_id, student_id, grade))
     return submissions
 
 
@@ -73,27 +73,27 @@ def main():
         except KeyError:
             print("Student not found")
             return
-        score = 0
+        grade = 0
         for submission in submissions:
             if submission.student != student.id:
                 continue
-            score += assignments[submission.assignment].points * (
-                submission.score / 100
+            grade += assignments[submission.assignment].total * (
+                submission.grade / 100
             )
-        print(f"{round(score / 10)}%")
+        print(f"{round(grade / 10)}%")
     if selection == "2" or selection == "3":
         name = input("What is the assignment name: ")
-        for a in assignments.values():
-            if a.name == name:
-                assignment = a
+        for work in assignments.values():
+            if work.name == name:
+                assignment = work
                 break
         else:
             print("Assignment not found")
             return
         subs = list(
             map(
-                lambda s: s.score,
-                filter(lambda s: s.assignment == assignment.id, submissions),
+                lambda hw: hw.score,
+                filter(lambda hw: hw.assignment == assignment.id, submissions),
             )
         )
         if selection == "2":
